@@ -5,8 +5,8 @@ import React from "react"
 import { GetPagedTopicsRequest } from '@/types/topic';
 import useTopicStore from '@/zustand/useTopicStore';
 import { useDebounce } from 'ahooks';
-import { Space, Input, Select, Button, Pagination, Divider } from 'antd';
-import { SearchOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { Space, Input, Select, Pagination } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 
 interface IProps {
