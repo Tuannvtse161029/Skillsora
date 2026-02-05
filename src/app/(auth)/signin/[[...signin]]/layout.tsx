@@ -1,26 +1,40 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: "Sign In - Skillsora",
-    description: "Skillsora - Học kỹ năng sinh tồn MIỄN PHÍ qua flashcard trực quan. Trang bị kiến thức thoát hiểm, sơ cứu và sinh tồn trong mọi tình huống khẩn cấp. Truy cập ngay để bảo vệ bản thân và gia đình!",
+    title: 'Đăng nhập - Skillsora',
+    description:
+        'Skillsora là ứng dụng học bằng flashcard giúp bạn ghi nhớ nhanh, ôn tập hiệu quả với lộ trình thông minh. Phù hợp cho học sinh, sinh viên và người tự học.',
+    keywords:
+        'flashcard, học flashcard, học nhanh nhớ lâu, spaced repetition, ôn tập thông minh, học tập hiệu quả, skillsora',
+    authors: { name: 'Skillsora' },
+
     icons: {
-        icon: '../../',
+        icon: '/logo.png',
     },
-    keywords: 'kỹ năng sinh tồn, năng lượng mặt trời, tạo lửa, tìm nước, sống sót, kỹ năng sống',
-    authors: { name: "Skillsora" },
+
     openGraph: {
-        title: 'Skillsora - Kỹ Năng Sinh Tồn',
-        description: 'Học các kỹ năng sinh tồn thiết yếu để xử lí khi gặp tình huống khẩn cấp.',
+        title: 'Skillsora – Học Flashcard thông minh, nhớ lâu hơn',
+        description:
+            'Học tập hiệu quả với flashcard, theo dõi tiến độ và ôn tập đúng thời điểm để ghi nhớ lâu dài.',
+        url: 'https://skillsora.vercel.app/',
+        siteName: 'Skillsora',
         images: [
             {
-                url: 'https://skillsora.io.vn/_next/image?url=%2Flogo.png&w=256&q=75',
-                width: 256,
-                height: 256,
+                url: 'https://skillsora.vercel.app/logo.png',
+                width: 512,
+                height: 512,
+                alt: 'Skillsora Flashcard App',
             },
         ],
-        url: 'https://skillsora.io.vn/',
+        locale: 'vi_VN',
+        type: 'website',
     },
-};
+
+    robots: {
+        index: true,
+        follow: true,
+    },
+}
 
 const AuthLayout = ({ children }: Readonly<{ children: React.ReactNode; }>) => {
     return (

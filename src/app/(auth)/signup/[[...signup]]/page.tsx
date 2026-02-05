@@ -71,9 +71,11 @@ export default function SignUpPage() {
                 <div className="bg-white rounded-2xl shadow-xl border border-cyan-100 p-8">
                     {/* Logo & Title */}
                     <div className="text-center mb-8">
-                        <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <span className="text-white font-bold text-2xl">S</span>
-                        </div>
+                        <Link href={"/"}>
+                            <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                                <span className="text-white font-bold text-2xl">S</span>
+                            </div>
+                        </Link>
                         <Title level={2} style={{ margin: 0, color: "#0e7490" }}>
                             Tạo tài khoản mới
                         </Title>

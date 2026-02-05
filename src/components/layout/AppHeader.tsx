@@ -10,6 +10,7 @@ import UserSubcription from '../ui/UserSubcription'
 import useUserStore from '@/zustand/useUserStore'
 import { usePathname } from 'next/navigation'
 import UserProfileHeader from '../ui/UserProfileHeader'
+import Image from 'next/image'
 
 const AppHeader = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -35,9 +36,16 @@ const AppHeader = () => {
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center shadow-md">
-              <span className="text-white font-bold text-lg">S</span>
+            <div className="w-10 h-10 relative">
+              <Image
+                src="/logo.png"
+                alt="Skillsora logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
+
             <span className="text-xl font-bold bg-gradient-to-r from-cyan-600 to-cyan-800 bg-clip-text text-transparent hidden sm:block">
               Skillsora
             </span>

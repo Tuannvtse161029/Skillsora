@@ -31,27 +31,40 @@ const layoutStyle = {
 };
 
 export const metadata: Metadata = {
-  title: 'Skillsora - Kỹ Năng Sinh Tồn',
+  title: 'Skillsora – Ứng dụng học Flashcard thông minh',
+  description:
+    'Skillsora là ứng dụng học bằng flashcard giúp bạn ghi nhớ nhanh, ôn tập hiệu quả với lộ trình thông minh. Phù hợp cho học sinh, sinh viên và người tự học.',
+  keywords:
+    'flashcard, học flashcard, học nhanh nhớ lâu, spaced repetition, ôn tập thông minh, học tập hiệu quả, skillsora',
+  authors: { name: 'Skillsora' },
+
   icons: {
-    icon: './',
+    icon: '/logo.png',
   },
-  description: 'Khám phá các kỹ năng sinh tồn cơ bản, từ cách tạo lửa đến tìm kiếm nước sạch.',
-  keywords: 'kỹ năng sinh tồn, năng lượng mặt trời, tạo lửa, tìm nước, sống sót, kỹ năng sống',
-  authors: { name: "Skillsora" },
+
   openGraph: {
-    title: 'Skillsora - Kỹ Năng Sinh Tồn',
-    description: 'Học các kỹ năng sinh tồn thiết yếu để xử lí khi gặp tình huống khẩn cấp.',
+    title: 'Skillsora – Học Flashcard thông minh, nhớ lâu hơn',
+    description:
+      'Học tập hiệu quả với flashcard, theo dõi tiến độ và ôn tập đúng thời điểm để ghi nhớ lâu dài.',
+    url: 'https://skillsora.vercel.app/',
+    siteName: 'Skillsora',
     images: [
       {
-        url: 'https://Skillsora.io.vn/_next/image?url=%2Flogo.png&w=256&q=75',
-        width: 256,
-        height: 256,
+        url: 'https://skillsora.vercel.app/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'Skillsora Flashcard App',
       },
     ],
-    url: 'https://Skillsora.io.vn/',
+    locale: 'vi_VN',
+    type: 'website',
   },
-  robots: 'index, follow',
-};
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
 
 export default async function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
 

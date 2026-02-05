@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { MailOutlined, GithubOutlined, TwitterOutlined, LinkedinOutlined, FacebookOutlined } from '@ant-design/icons'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 
 export default function Footer() {
     const currentYear = new Date().getFullYear()
@@ -23,10 +24,18 @@ export default function Footer() {
                     {/* Logo */}
                     <div className="md:col-span-1">
                         <Link href="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold">S</span>
+                            <div className="w-8 h-8 relative">
+                                <Image
+                                    src="/logo.png"
+                                    alt="Skillsora logo"
+                                    fill
+                                    className="object-contain"
+                                />
                             </div>
-                            <span className="font-bold text-lg text-cyan-600">Skillsora</span>
+
+                            <span className="font-bold text-lg text-cyan-600">
+                                Skillsora
+                            </span>
                         </Link>
 
                         <p className="text-sm text-gray-600 mb-4">

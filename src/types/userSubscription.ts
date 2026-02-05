@@ -11,5 +11,5 @@ export type UserSubscription = {
 };
 
 export type GetUserSubscriptionsRequest = IPageRequest & {
-    userId: string
+
 }

@@ -1,5 +1,5 @@
 // Base 
-export const BASE_API = "http://103.129.127.9/api/v1";
+export const BASE_API = "https://skillsora.funnydev.id.vn/api/v1";
 
 // Authentication
 export const AUTH_CLERK_API = "/auth/clerk";

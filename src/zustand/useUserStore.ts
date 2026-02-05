@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { getCookie, setCookie, deleteCookie } from 'cookies-next';
 import axiosClient from '@/utils/axios/axiosClient';
 import { GET_USER_SUBSCRIPTIONS } from '@/constants/apis';
-import { IBaseModel, IPaginate } from '@/interfaces/general';
-import { UserSubscription, GetUserSubscriptionsRequest } from '@/types/userSubscription';
+import { IBaseModel, IPageRequest, IPaginate } from '@/interfaces/general';
+import { UserSubscription } from '@/types/userSubscription';
 import { User } from '@/types/user';
 
 interface UserStore {
@@ -13,7 +13,12 @@ interface UserStore {
     appUserId: string | null;
     userSubcriptions: UserSubscription[] | null;
     user: User | null;
+    userSubscriptions: IPaginate<UserSubscription> | null;
+    subscriptionQuery: IPageRequest;
 
+    setSubscriptionPage: (page: number) => void;
+    setSubscriptionSize: (size: number) => void;
+    toggleSubscriptionSort: () => void;
     setAuthenticated: () => Promise<void>;
     getUser: () => Promise<void>;
     getUserSubsctiptions: () => Promise<void>;
@@ -21,7 +26,6 @@ interface UserStore {
     logout: () => void;
 }
 
-// Hàm kiểm tra đồng bộ cookie ngay khi app vừa tải
 const checkInitialToken = () => {
     if (typeof window !== 'undefined') {
         const token = getCookie('__accessToken');
@@ -33,28 +37,36 @@ const checkInitialToken = () => {
 const hasToken = checkInitialToken();
 
 const useUserStore = create<UserStore>((set, get) => ({
-    // Nếu có token -> authenticated = true (Hiện profile luôn)
-    // Nếu không -> authenticated = false (Hiện nút login luôn)
+
     authenticated: hasToken,
 
-    // [FIX]: Luôn set false để tránh việc bị treo loading khi là khách (không có token)
     loadingAuth: false,
 
     loading: false,
     appUserId: null,
     userSubcriptions: null,
     user: null,
+    userSubscriptions: null,
+
+    subscriptionQuery: {
+        page: 1,
+        size: 5,
+        isAscending: false,
+        orderOn: 'startDate',
+        searchKey: '',
+        searchProp: '',
+    },
+
 
     setAuthenticated: async () => {
         const token = getCookie('__accessToken');
-        const userId = getCookie('__appUserId'); // Có thể null nếu mới login xong chưa kịp lấy profile
+        const userId = getCookie('__appUserId');
 
         if (!token) {
             set({ authenticated: false, loadingAuth: false });
             return;
         }
 
-        // Nếu có token, confirm state và cập nhật userId nếu có
         set((state) => ({
             authenticated: true,
             loadingAuth: false,
@@ -66,7 +78,6 @@ const useUserStore = create<UserStore>((set, get) => ({
         setCookie('__accessToken', token, { path: '/', sameSite: 'lax' });
         setCookie('__refreshToken', refreshToken, { path: '/', sameSite: 'lax' });
 
-        // Cập nhật store ngay lập tức để UI chuyển đổi
         set({
             authenticated: true,
             loadingAuth: false
@@ -74,12 +85,10 @@ const useUserStore = create<UserStore>((set, get) => ({
     },
 
     logout: () => {
-        // 1. Xóa hết cookie
         deleteCookie('__accessToken');
         deleteCookie('__refreshToken');
         deleteCookie('__appUserId');
 
-        // 2. Reset sạch state về null/false
         set({
             authenticated: false,
             appUserId: null,
@@ -88,13 +97,11 @@ const useUserStore = create<UserStore>((set, get) => ({
             loadingAuth: false
         });
 
-        // 3. Điều hướng
-        window.location.href = '/signin';
+        window.location.href = '/';
     },
 
     getUser: async () => {
         const accessToken = getCookie('__accessToken');
-        // Nếu không có token thì thôi, không gọi API, tránh lỗi 401
         if (!accessToken) {
             set({ authenticated: false });
             return;
@@ -120,22 +127,58 @@ const useUserStore = create<UserStore>((set, get) => ({
 
     getUserSubsctiptions: async () => {
         const userId = get().appUserId || getCookie('__appUserId');
-
         if (!userId) return;
 
         try {
-            const request: GetUserSubscriptionsRequest = {
-                userId: userId as string,
-                searchProp: '', isAscending: true, page: 1, size: 100, orderOn: '', searchKey: ''
-            };
-            const response = await axiosClient.get<IBaseModel<IPaginate<UserSubscription>>>(GET_USER_SUBSCRIPTIONS, { params: request });
+            set({ loading: true });
+
+            const response = await axiosClient.get<
+                IBaseModel<IPaginate<UserSubscription>>
+            >(GET_USER_SUBSCRIPTIONS, {
+                params: {
+                    ...get().subscriptionQuery,
+                },
+            });
 
             if (response.data.isSuccess) {
-                set({ userSubcriptions: response.data.responseRequest?.items.reverse() });
+                set({
+                    userSubscriptions: response.data.responseRequest,
+                });
             }
-        } catch {
+        } finally {
+            set({ loading: false });
         }
     },
+
+
+    setSubscriptionPage: (page: number) => {
+        set((state) => ({
+            subscriptionQuery: {
+                ...state.subscriptionQuery,
+                page,
+            },
+        }));
+        get().getUserSubsctiptions();
+    },
+
+    setSubscriptionSize: (size: number) =>
+        set((state) => ({
+            subscriptionQuery: {
+                ...state.subscriptionQuery,
+                size,
+                page: 1,
+            },
+        })),
+
+    toggleSubscriptionSort: () =>
+        set((state) => ({
+            subscriptionQuery: {
+                ...state.subscriptionQuery,
+                isAscending: !state.subscriptionQuery.isAscending,
+                page: 1,
+            },
+        })),
+
 }));
 
 export default useUserStore;
