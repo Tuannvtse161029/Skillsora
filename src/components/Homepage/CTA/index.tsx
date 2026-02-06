@@ -77,7 +77,7 @@ export default function CTASection() {
                                         <Badge color="cyan" />
                                         <span className="font-semibold">Quiz Riêng bạn</span>
                                     </div>
-                                    <p className="text-sm text-black">Tự tạo nội dung của bạn</p>
+                                    <p className="text-sm text-black">Tự tạo nội dung của bạn sau khi mua gói</p>
                                 </Card>
 
                                 <Card bordered className="bg-white/10 !border-white/20 backdrop-blur-sm text-white">

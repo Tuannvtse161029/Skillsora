@@ -5,8 +5,7 @@ import { Dialog, DialogPanel, PopoverGroup } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import HeaderButton from '../ui/HeaderButton'
 import Link from 'next/link'
-import { HOME_ROUTE, LEARNING_PACKAGES_ROUTE, LEARNING_TOPICS_ROUTE, SIGNIN_ROUTE } from '@/constants/routes'
-import UserSubcription from '../ui/UserSubcription'
+import { HOME_ROUTE, LEARNING_TOPICS_ROUTE, SIGNIN_ROUTE } from '@/constants/routes'
 import useUserStore from '@/zustand/useUserStore'
 import { usePathname } from 'next/navigation'
 import UserProfileHeader from '../ui/UserProfileHeader'
@@ -65,7 +64,6 @@ const AppHeader = () => {
         <PopoverGroup className="hidden lg:flex lg:gap-x-2">
           <HeaderButton isMultiPath href={LEARNING_TOPICS_ROUTE} className="text-sm py-2 px-4 font-medium">Học Tập</HeaderButton>
           <HeaderButton isMultiPath href={"/blog"} className="text-sm py-2 px-4 font-medium">Blog</HeaderButton>
-          <HeaderButton href={LEARNING_PACKAGES_ROUTE} className="text-sm py-2 px-4 font-medium">Nâng cấp gói</HeaderButton>
         </PopoverGroup>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4">
@@ -88,67 +86,103 @@ const AppHeader = () => {
         </div>
       </nav>
 
-      {/* MOBILE MENU - Cũng áp dụng showLoading tương tự */}
+      {/* MOBILE MENU */}
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10 bg-black/20 backdrop-blur-sm" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-gradient-to-b from-cyan-50 to-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-cyan-200">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
-              </div>
-              <span className="text-xl font-bold text-cyan-800">Skillsora</span>
-            </Link>
-            <button onClick={() => setMobileMenuOpen(false)} className="-m-2.5 rounded-lg p-2.5 text-cyan-700">
-              <XMarkIcon className="h-6 w-6" />
-            </button>
+        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-gradient-to-b from-cyan-50 to-white sm:max-w-sm sm:ring-1 sm:ring-cyan-200">
+          {/* Header */}
+          <div className="sticky top-0 bg-gradient-to-r from-cyan-50 to-white border-b border-cyan-100 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2"
+              >
+                <div className="relative w-8 h-8">
+                  <Image
+                    src="/logo.png"
+                    alt="Skillsora"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <p className="font-bold text-cyan-800 text-sm">Skillsora</p>
+              </Link>
+
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-full p-2 text-gray-600 hover:bg-cyan-100 transition-colors"
+              >
+                <XMarkIcon className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-cyan-200">
-              <div className="space-y-1 py-6">
-                <HeaderButton href={HOME_ROUTE} onClick={() => setMobileMenuOpen(false)} className="block w-full text-left">Trang Chủ</HeaderButton>
-                <HeaderButton isMultiPath href={LEARNING_TOPICS_ROUTE} onClick={() => setMobileMenuOpen(false)} className="block w-full text-left">Học Tập</HeaderButton>
-                <HeaderButton isMultiPath href={"/blog"} onClick={() => setMobileMenuOpen(false)} className="block w-full text-left">Blog</HeaderButton>
-                <HeaderButton href={LEARNING_PACKAGES_ROUTE} onClick={() => setMobileMenuOpen(false)} className="block w-full text-left">Nâng cấp gói</HeaderButton>
-              </div>
-
-              <div className="py-6">
-                {showLoading ? (
-                  <div className="h-12 w-full bg-cyan-100/50 animate-pulse rounded-xl"></div>
-                ) : authenticated ? (
-                  <div className='flex items-center justify-center flex-col gap-6'>
-                    <div className="flex gap-3 w-full">
-                      <HeaderButton
-                        href="/profile"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block rounded-lg px-3 py-2 text-sm font-semibold bg-emerald-500 text-white text-center flex-1"
-                      >
-                        Hồ sơ
-                      </HeaderButton>
-                      <button
-                        onClick={() => {
-                          logout()
-                          setMobileMenuOpen(false)
-                        }}
-                        className="flex-1 rounded-lg px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
-                      >
-                        Đăng xuất
-                      </button>
-                    </div>
-                    <UserSubcription />
-                  </div>
-                ) : (
-                  <HeaderButton
-                    onClick={() => setMobileMenuOpen(false)}
-                    href={SIGNIN_ROUTE}
-                    className="block rounded-xl px-4 py-3 text-base font-semibold bg-cyan-500 text-white text-center shadow-md w-full"
-                  >
-                    Đăng nhập
-                  </HeaderButton>
-                )}
-              </div>
+          {/* Content */}
+          <div className="px-6 py-8">
+            {/* Navigation Items */}
+            <div className="space-y-2 mb-8">
+              <HeaderButton
+                href={HOME_ROUTE}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-cyan-100 rounded-lg transition-colors"
+              >
+                Trang Chủ
+              </HeaderButton>
+              <HeaderButton
+                isMultiPath
+                href={LEARNING_TOPICS_ROUTE}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-cyan-100 rounded-lg transition-colors"
+              >
+                Học Tập
+              </HeaderButton>
+              <HeaderButton
+                isMultiPath
+                href={"/blog"}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-cyan-100 rounded-lg transition-colors"
+              >
+                Blog
+              </HeaderButton>
             </div>
+
+            {/* Divider */}
+            <div className="h-px bg-gradient-to-r from-transparent via-cyan-200 to-transparent mb-8" />
+
+            {/* Auth Section */}
+            {showLoading ? (
+              <div className="space-y-2">
+                <div className="h-12 w-full bg-cyan-100/50 animate-pulse rounded-lg"></div>
+              </div>
+            ) : authenticated ? (
+              <div className="space-y-3">
+                <HeaderButton
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full px-4 py-3 text-sm font-semibold bg-cyan-500 text-white text-center rounded-lg hover:bg-cyan-600 shadow-md transition-all active:scale-95"
+                >
+                  Xem Hồ sơ
+                </HeaderButton>
+                <button
+                  onClick={() => {
+                    logout()
+                    setMobileMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-sm font-semibold text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors border border-cyan-200"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            ) : (
+              <HeaderButton
+                onClick={() => setMobileMenuOpen(false)}
+                href={SIGNIN_ROUTE}
+                className="block w-full px-4 py-3 text-base font-semibold bg-gradient-to-r from-cyan-500 to-cyan-600 text-white text-center rounded-lg hover:shadow-lg shadow-md transition-all active:scale-95"
+              >
+                Đăng nhập →
+              </HeaderButton>
+            )}
           </div>
         </DialogPanel>
       </Dialog>

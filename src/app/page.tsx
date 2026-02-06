@@ -3,6 +3,7 @@ import SpecialFeatures from '../components/Homepage/SpecialFeatures/SpecialFeatu
 import Reviews from '../components/Homepage/Reviews/Reviews'
 import StudySetsSection from '@/components/Homepage/StudySets';
 import CTASection from '@/components/Homepage/CTA';
+import PackageCarouselSection from '@/components/Homepage/Package/PackageCarouselSection';
 export default function Home() {
   return (
     <div className='bg-white'>
@@ -10,6 +11,7 @@ export default function Home() {
       <SpecialFeatures />
       <StudySetsSection />
       <Reviews />
+      <PackageCarouselSection />
       <CTASection />
     </div>
   );

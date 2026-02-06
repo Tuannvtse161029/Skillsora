@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { Card, Button, Tag, Rate, Row, Col } from 'antd';
 import { ArrowRightIcon, UsersIcon } from '@heroicons/react/24/outline';
 import { FaBookOpen } from 'react-icons/fa';
+import Link from 'next/link';
 
 const studySets = [
     {
@@ -82,22 +83,18 @@ export default function StudySetsSection() {
                                         <UsersIcon width={16} height={16} /> <span>{set.students.toLocaleString()}</span> </div> </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
                                     <Rate allowHalf disabled value={set.rating} /> <span style={{ fontWeight: 600 }}>{set.rating}</span> </div>
-                                <Button type="primary" size="large" className='!bg-cyan-600 hover:bg-cyan-700' style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontWeight: 600 }} > Học Ngay <ArrowRightIcon width={18} height={18} />
-                                </Button>
+                                <Link href="/my-topics">
+                                    <Button
+                                        type="primary"
+                                        size="large"
+                                        className='!bg-cyan-600 hover:bg-cyan-700'
+                                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontWeight: 600 }} > Học Ngay <ArrowRightIcon width={18} height={18} />
+                                    </Button>
+                                </Link>
                             </Card>
                         </Col>
                     ))}
-                </Row> <div style={{ textAlign: 'center', marginTop: 40 }}>
-                    <Button
-                        className='!bg-cyan-600 hover:bg-cyan-700'
-                        type="default"
-                        size="large"
-                        style={{ paddingInline: 32, borderWidth: 2, fontWeight: 600 }}
-                        icon={<ArrowRightIcon width={18} height={18} />}
-                    >
-                        Xem Tất Cả Bài Học
-                    </Button>
-                </div>
+                </Row>
             </div>
         </section>
     )
