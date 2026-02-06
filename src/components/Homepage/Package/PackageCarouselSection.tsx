@@ -33,13 +33,12 @@ const PackageCarouselSection = () => {
     const [packages, setPackages] = useState<IPaginate<LearningPackageDto>>();
     const [isCreatingLink, setIsCreatingLink] = useState<boolean>(false);
 
-    // 1. Fetch Packages
     const { loading } = useRequest(async () => {
         const query: GetPagedPackageRequest = {
             searchProp: '',
             searchKey: '',
             page: 1,
-            size: 100, // Lấy hết để slider chạy
+            size: 100,
             orderOn: 'price',
             isAscending: true,
         }
@@ -49,11 +48,9 @@ const PackageCarouselSection = () => {
         }
     })
 
-    // 2. Handle Payment
     const handleGetPaymentLink = async (packageId: string) => {
         try {
             if (!user) {
-                // Logic xử lý chưa login, ví dụ push về signin
                 router.push('/signin');
                 return;
             }
@@ -69,7 +66,7 @@ const PackageCarouselSection = () => {
                 buyerAddress: "Vietnam",
                 buyerEmail: user?.email,
                 buyerName: user?.fullName,
-                buyerPhone: user.phoneNumber || "", // Fix potential undefined
+                buyerPhone: user.phoneNumber || "",
             };
 
             const response = await axiosClient.post<IBaseModel<CheckOutInfo>>(POST_PAYMENT_CHECKOUT_API, checkOutRequest);
@@ -133,7 +130,7 @@ const PackageCarouselSection = () => {
                         >
                             {packages?.items.map((item) => (
 
-                                <SwiperSlide key={item.id} className="h-auto pb-8 pt-4">
+                                <SwiperSlide key={item.id} className="h-auto pb-8 pt-4 !mr-[55px]">
                                     <div className="h-full flex flex-col">
                                         <PackageCard
                                             loading={isCreatingLink}

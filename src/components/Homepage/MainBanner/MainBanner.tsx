@@ -29,7 +29,7 @@ export default function HeroSection() {
                                     <ArrowRightOutlined size={18} />
                                 </button>
                             </Link>
-                            <button className='inline-flex items-center justify-center gap-2 px-8 py-3 border-2 border-cyan-500 text-cyan-500 rounded-lg font-semibold hover:bg-cyan-50 transition-colors'>
+                            <button className='inline-flex items-center justify-center gap-2 py-3 border-2 border-cyan-500 text-cyan-500 rounded-lg font-semibold hover:bg-cyan-50 transition-colors px-12 sm:px-8'>
                                 Tìm Hiểu Thêm
                             </button>
                         </div>
@@ -37,7 +37,7 @@ export default function HeroSection() {
 
                     {/* Right visual */}
                     <div className='relative h-96 md:h-[450px]'>
-                        <div className='absolute inset-0 flex items-center justify-center'>
+                        <div className='absolute inset-0 flex items-center justify-center pr-5 pl-10 sm:px-0'>
                             <div className='relative w-full max-w-sm'>
 
                                 {/* Card 1 */}
