@@ -20,7 +20,6 @@ export default function MyTopicPage() {
     const [searchValue, setSearchValue] = useState<string>("");
     const debouncedSearchValue = useDebounce(searchValue, 500);
 
-
     const [topics, setTopics] = useState<IPaginate<TopicDto> | null>(null)
     const [query, setQuery] = useState<GetPagedTopicsRequest>({
         searchProp: 'topicName',
@@ -30,9 +29,11 @@ export default function MyTopicPage() {
         orderOn: 'createdOn',
         isAscending: false,
     })
+
+    const [filterStatus, setFilterStatus] = useState<string>('all')
+
     const [deleteId, setDeleteId] = useState<string | null>(null)
     const [activeMenu, setActiveMenu] = useState<string | null>(null)
-
 
     const { loading } = useRequest(async () => {
         try {
@@ -40,8 +41,7 @@ export default function MyTopicPage() {
             if (response.data.isSuccess) {
                 setTopics(response.data.responseRequest ?? null)
             }
-        } catch (error) {
-            console.error("[v0] Error fetching topics:", error)
+        } catch {
         }
     }, {
         refreshDeps: [query]
@@ -70,6 +70,10 @@ export default function MyTopicPage() {
         }))
     }
 
+    const handleFilterStatusChange = (value: string) => {
+        setFilterStatus(value)
+    }
+
     const handlePageChange = (page: number) => {
         setQuery(prev => ({
             ...prev,
@@ -85,7 +89,12 @@ export default function MyTopicPage() {
         }))
     }
 
-    const topicsList = topics?.items ?? []
+    const topicsList = topics?.items?.filter(topic => {
+        if (filterStatus === 'all') return true;
+        if (filterStatus === 'complete') return topic.isComplete === true;
+        if (filterStatus === 'incomplete') return !topic.isComplete;
+        return true;
+    }) ?? []
 
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat("vi-VN", {
@@ -120,6 +129,7 @@ export default function MyTopicPage() {
             notification.success({ message: "Đã xóa chủ đề thành công" })
             setDeleteId(null)
         } catch {
+            notification.error({ message: "Lỗi khi xóa chủ đề" })
         }
     }
 
@@ -156,24 +166,41 @@ export default function MyTopicPage() {
                         size="large"
                         allowClear
                     />
-                    <Select
-                        value={
-                            query.orderOn === 'createdOn' && !query.isAscending
-                                ? 'newest'
-                                : query.orderOn === 'createdOn' && query.isAscending
-                                    ? 'oldest'
-                                    : 'name'
-                        }
-                        onChange={handleSortChange}
-                        style={{ width: 180 }}
-                        size="large"
-                        suffixIcon={<FilterOutlined className="text-cyan-500" />}
-                        options={[
-                            { value: "newest", label: "Mới nhất" },
-                            { value: "oldest", label: "Cũ nhất" },
-                            { value: "name", label: "Tên A-Z" },
-                        ]}
-                    />
+
+                    <div className="flex gap-4">
+                        {/* Status Filter */}
+                        <Select
+                            value={filterStatus}
+                            onChange={handleFilterStatusChange}
+                            style={{ width: 160 }}
+                            size="large"
+                            options={[
+                                { value: "all", label: "Tất cả trạng thái" },
+                                { value: "complete", label: "Đã hoàn thành" },
+                                { value: "incomplete", label: "Chưa hoàn thành" },
+                            ]}
+                        />
+
+                        {/* Sort Filter */}
+                        <Select
+                            value={
+                                query.orderOn === 'createdOn' && !query.isAscending
+                                    ? 'newest'
+                                    : query.orderOn === 'createdOn' && query.isAscending
+                                        ? 'oldest'
+                                        : 'name'
+                            }
+                            onChange={handleSortChange}
+                            style={{ width: 180 }}
+                            size="large"
+                            suffixIcon={<FilterOutlined className="text-cyan-500" />}
+                            options={[
+                                { value: "newest", label: "Mới nhất" },
+                                { value: "oldest", label: "Cũ nhất" },
+                                { value: "name", label: "Tên A-Z" },
+                            ]}
+                        />
+                    </div>
                 </div>
 
                 {/* Topic Grid */}
@@ -199,9 +226,11 @@ export default function MyTopicPage() {
                         <div className="w-24 h-24 bg-cyan-100 rounded-full flex items-center justify-center mb-6">
                             <BookOutlined className="text-4xl text-cyan-500" />
                         </div>
-                        <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có chủ đề nào</h3>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-2">Không tìm thấy chủ đề nào</h3>
                         <p className="text-gray-500 mb-6 text-center max-w-md">
-                            Bạn chưa tạo chủ đề nào. Hãy bắt đầu tạo chủ đề đầu tiên của bạn ngay bây giờ!
+                            {filterStatus !== 'all' || searchValue
+                                ? "Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm"
+                                : "Bạn chưa tạo chủ đề nào. Hãy bắt đầu tạo chủ đề đầu tiên của bạn ngay bây giờ!"}
                         </p>
                         <Link href="/create-topic">
                             <Button type="primary" icon={<PlusOutlined />} className="!bg-cyan-500 hover:!bg-cyan-600 !border-cyan-500">
@@ -215,8 +244,15 @@ export default function MyTopicPage() {
                             <div
                                 key={topic.topicId}
                                 onClick={() => handleCardClick(topic.topicId)}
-                                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-cyan-100 hover:shadow-lg hover:border-cyan-200 transition-all duration-300 cursor-pointer group"
+                                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-cyan-100 hover:shadow-lg hover:border-cyan-200 transition-all duration-300 cursor-pointer group relative"
                             >
+                                {/* Status Badge - Only show if completed */}
+                                {topic.isComplete && (
+                                    <span className="absolute top-3 left-3 z-10 px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 shadow-sm border border-green-200">
+                                        Đã hoàn thành
+                                    </span>
+                                )}
+
                                 {/* Thumbnail */}
                                 <div className="relative h-44 overflow-hidden">
                                     <Image

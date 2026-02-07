@@ -8,6 +8,7 @@ export type TopicDto = {
     createdOn?: Date | null;
     updatedOn?: Date | null;
     thumbnail?: string;
+    isComplete: boolean
 }
 
 export type TopicOfUserDto = TopicDto & {
