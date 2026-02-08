@@ -19,6 +19,7 @@ export function middleware(request: NextRequest) {
         if (!signUpSessionId || !signUpExpiredTime) {
             return NextResponse.redirect(new URL(HOME_ROUTE, request.url));
         }
+        return NextResponse.next();
     }
 
     const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));

@@ -20,13 +20,13 @@ import CompleteResult from './CompleteResult';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import useSubTopicStore from '@/zustand/useSubTopicStore';
 import { useParams, useRouter } from 'next/navigation';
-import { LEARNING_TOPICS_SUBS_EXCERCISES_ROUTE } from '@/constants/routes';
 
 
 const ExcerciseSpace = () => {
 
     const params = useParams();
     const subTopicId = params.subtopicId as string;
+    const topicId = params.topicId as string;
 
 
     const [isAttemptModalOpen, setIsAttemptModalOpen] = useState(false);
@@ -69,6 +69,8 @@ const ExcerciseSpace = () => {
     const { excercises } = useExcerciseStore();
     const { subTopic, getSubTopic, subTopics } = useSubTopicStore();
     const router = useRouter();
+    const isLastExercise =
+        excercises?.total !== undefined && no >= excercises.total - 1;
 
     useEffect(() => {
         if (subTopicId) {
@@ -150,13 +152,25 @@ const ExcerciseSpace = () => {
     }, [attempted, attemptedExercises, excercise, excercises?.items]);
 
     const calculateProgress = () => {
-        if (excercises?.total === undefined) {
+        if (!excercises?.total) {
+            setProgress(0);
             return;
         }
 
-        const progress = no / (excercises?.total - 1) * 100
-        setProgress(progress);
-    }
+        // ✅ chỉ có 1 flashcard
+        if (excercises.total === 1) {
+            setProgress(attempted ? 100 : 0);
+            return;
+        }
+
+        const value = (no / (excercises.total - 1)) * 100;
+        setProgress(Math.min(100, Math.max(0, value)));
+    };
+
+    useEffect(() => {
+        calculateProgress();
+    }, [no, attempted, excercises?.total]);
+
 
     const navigateNext = useCallback(() => {
 
@@ -231,8 +245,7 @@ const ExcerciseSpace = () => {
             }
 
             setAttemptLoading(false);
-        } catch (error) {
-            console.error('Error during attempt:', error);
+        } catch {
         }
     };
 
@@ -252,8 +265,7 @@ const ExcerciseSpace = () => {
             if (index === -1 || index === subTopics?.items.length - 1) {
                 router.back();
             }
-            const nextSubTopic = subTopics?.items[index + 1];
-            router.replace(`${LEARNING_TOPICS_SUBS_EXCERCISES_ROUTE}?subTopicId=${nextSubTopic?.id}`);
+            router.push(`/my-topics/${topicId}/subtopic`);
         } else {
             router.back();
         }
@@ -384,14 +396,14 @@ const ExcerciseSpace = () => {
 
                     {/* Next Button */}
                     <Button
-                        disabled={!attempted}
-                        className={`!h-11 !rounded-lg !font-bold w-full ${attempted
+                        disabled={!attempted || isLastExercise}
+                        className={`!h-11 !rounded-lg !font-bold w-full ${attempted && !isLastExercise
                             ? '!bg-cyan-500 !text-white hover:!bg-cyan-600 !border-0'
                             : '!bg-gray-100 !text-gray-400 !border-gray-200'
                             }`}
                         onClick={navigateNext}
                     >
-                        Tiếp theo →
+                        {isLastExercise ? 'Đã hết bài' : 'Tiếp theo →'}
                     </Button>
                 </div>
             </div>

@@ -23,7 +23,7 @@ export default function HeroSection() {
 
                         {/* CTA Buttons */}
                         <div className='flex flex-col sm:flex-row gap-4 pt-4 justify-center'>
-                            <Link href='/topics'>
+                            <Link href='/my-topics'>
                                 <button className='inline-flex items-center justify-center gap-2 px-8 py-3 bg-cyan-500 text-white rounded-lg font-semibold hover:bg-cyan-600 transition-colors'>
                                     Bắt Đầu Ngay
                                     <ArrowRightOutlined size={18} />

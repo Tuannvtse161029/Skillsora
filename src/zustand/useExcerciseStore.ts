@@ -119,7 +119,6 @@ const useExcerciseStore = create<ExcerciseStore>((set) => ({
             const response = await axiosClient.post(`/exercises/${exerciseId}/attempt`, request)
             return response.data.responseRequest
         } catch (error) {
-            console.error("[v0] Error attempting exercise:", error)
             throw error
         }
     },
